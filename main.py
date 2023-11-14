@@ -56,18 +56,23 @@ def is_bitlink(url, api_key):
 
 def main():
     load_dotenv()
-    api_key = os.getenv('API_KEY')
-    long_url = input('Введите ссылку: ')
-    parsed_url = urlparse(long_url)
-    combined_path = f"{parsed_url.netloc}{parsed_url.path}"
-
+    apikey_bitly = os.environ('APIKEY_BITLY')
+    headers = {
+        "Authorization": f"Bearer {apikey_bitly}",
+    }
+    parser = argparse.ArgumentParser(description='Сокращает ссылки и выводит количество переходов по ней')
+    parser.add_argument('link', help='Введите ссылку:')
+    args = parser.parse_args()
+    print(args.link)
+    parse_link = urlparse(args.link)
+    mybitlink = f"{parse_link.netloc}{parse_link.path}"
     try:
-        if is_bitlink(combined_path, api_key):
-            print(count_clicks(combined_path, api_key))
+        if is_bitlink(headers, mybitlink):
+           print(count_clicks(headers, mybitlink))
         else:
-            print(shorten_link(long_url, api_key))
-    except HTTPError as error:
-        print("Неправильная ссылка: ", error)
+            print(shorten_link_url(headers, args.link))
+    except requests.exceptions.HTTPError as error:
+        print("Неверная ссылка.", error)
 
 if __name__ == '__main__':
     main()
