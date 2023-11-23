@@ -55,15 +55,15 @@ def is_bitlink(url, api_key):
 
 def main():
     load_dotenv()
-    apikey_bitly = os.getenv('APIKEY_BITLY')
+    bitly_token = os.environ['APIKEY_BITLY']
     headers = {
-        "Authorization": f"Bearer {apikey_bitly}",
+        "Authorization": f"Bearer {bitly_token}",
     }
     parser = argparse.ArgumentParser(description='Сокращает ссылки и выводит количество переходов по ней')
     parser.add_argument('link', help='Введите ссылку:')
     args = parser.parse_args()
-    parse_link = urlparse(args.link)
-    bitlink = f"{parse_link.netloc}{parse_link.path}"
+    link_parse = urlparse(args.link)
+    bitlink = f"{link_parse.netloc}{link_parse.path}"
     try:
         if is_bitlink(headers, bitlink):
            print(count_clicks(headers, bitlink))
